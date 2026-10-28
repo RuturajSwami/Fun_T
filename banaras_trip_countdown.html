@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banaras Trip - Sacred Kashi Countdown 2027</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts for Indian aesthetic & typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Rozha+One&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-cinzel {
+      font-family: 'Cinzel', serif;
+    }
+
+    /* Ambient background image styling */
+    .bg-hero {
+      position: absolute;
+      inset: -20px;
+      background-size: cover;
+      background-position: center 40%;
+      background-repeat: no-repeat;
+      transition: transform 0.6s ease;
+      animation: kenBurnsSlow 26s ease-in-out infinite alternate;
+    }
+
+    @keyframes kenBurnsSlow {
+      0% {
+        transform: scale(1.0) translateY(0);
+      }
+      100% {
+        transform: scale(1.05) translateY(-10px);
+      }
+    }
+
+    /* Glassmorphism with sacred saffron & gold accents */
+    .banaras-glass {
+      background: rgba(18, 12, 10, 0.74);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(245, 158, 11, 0.32);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.8),
+                  0 0 25px rgba(249, 115, 22, 0.15);
+    }
+    .banaras-glass:hover {
+      border-color: rgba(251, 191, 36, 0.58);
+      box-shadow: 0 20px 42px -10px rgba(0, 0, 0, 0.85),
+                  0 0 35px rgba(245, 158, 11, 0.28);
+    }
+
+    /* Golden-Saffron flame text gradient */
+    .kashi-gradient-text {
+      background: linear-gradient(135deg, #FFFBEB 0%, #FBBF24 45%, #EA580C 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Pulse animation for ticking seconds */
+    @keyframes subtlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    .pulse-tick {
+      animation: subtlePulse 1s ease-in-out infinite;
+    }
+
+    /* Floating Trishul / Shiva chant badge */
+    @keyframes floatGentle {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(0.6deg); }
+    }
+    .floating-divine {
+      animation: floatGentle 5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-stone-950 text-amber-50 min-h-screen relative overflow-x-hidden flex flex-col justify-between selection:bg-orange-500 selection:text-stone-950">
+
+  <!-- Full-Screen Banaras Background (Your Provided Image: Sunrise Boat at Varanasi Ghat) -->
+  <div id="bg-container" class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+    <div id="hero-bg" class="bg-hero" style="background-color: #1a0f0a; filter: brightness(0.68) contrast(1.1);"></div>
+  </div>
+
+  <!-- Ambient River Twilight & Vignette Overlays -->
+  <div class="fixed inset-0 z-0 bg-gradient-to-t from-stone-950/95 via-stone-950/45 to-stone-950/70 pointer-events-none"></div>
+  <div class="fixed inset-0 z-0 bg-[radial-gradient(circle_at_center,_transparent_25%,_rgba(12,8,6,0.85)_100%)] pointer-events-none"></div>
+
+  <!-- Top Navigation Bar -->
+  <header class="relative z-10 w-full px-4 py-3 md:px-10 flex items-center justify-between border-b border-orange-500/25 backdrop-blur-md bg-stone-950/60">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-600 via-amber-500 to-amber-300 flex items-center justify-center text-stone-950 shadow-lg shadow-orange-500/30">
+        <span class="font-cinzel text-lg font-black">🔱</span>
+      </div>
+      <div>
+        <span class="font-cinzel text-base sm:text-lg tracking-widest font-bold text-amber-200 block leading-tight">
+          KASHI VISHWANATH
+        </span>
+        <span class="text-[10px] tracking-wider text-orange-400/90 font-mono uppercase">Varanasi • Sacred Ghats</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <!-- Hidden file input for uploading your exact local copy if desired -->
+      <input type="file" id="local-img-input" accept="image/*" class="hidden">
+      <button onclick="document.getElementById('local-img-input').click()" title="Select your local image file directly" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-stone-900/80 hover:bg-stone-800 text-stone-300 border border-stone-700/60 transition-all shadow-md active:scale-95">
+        <i data-lucide="image" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span class="hidden sm:inline">Set Photo</span>
+      </button>
+
+      <!-- Instant Sacred Temple Bell Chime -->
+      <button id="bell-btn" title="Ring Sacred Temple Bell" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-stone-900/80 hover:bg-stone-800 text-amber-300 border border-orange-500/35 transition-all shadow-md active:scale-95">
+        <i data-lucide="bell" class="w-3.5 h-3.5 text-orange-400"></i>
+        <span>Temple Bell</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Hero & Countdown Body -->
+  <main class="relative z-10 container mx-auto px-4 py-8 md:py-12 flex flex-col items-center justify-center text-center">
+    
+    <!-- Spiritual Badge / Mahadev Mantra -->
+    <div class="floating-divine mb-3.5 inline-flex items-center gap-2.5 px-5 py-1.5 rounded-full bg-orange-500/15 border border-orange-400/35 text-amber-300 text-xs md:text-sm font-medium tracking-widest uppercase shadow-md">
+      <span class="text-orange-400 font-bold">ॐ नमः शिवाय</span>
+      <span>Har Har Mahadev • Kashi Yatra 2027</span>
+      <span class="text-orange-400 font-bold">ॐ नमः शिवाय</span>
+    </div>
+
+    <!-- Main Title -->
+    <h1 class="font-cinzel text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-2 uppercase drop-shadow-2xl">
+      <span class="kashi-gradient-text">Banaras Trip</span>
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="max-w-xl text-stone-300 text-sm sm:text-base md:text-lg mb-7 font-light tracking-wide leading-relaxed">
+      Countdown to the timeless City of Light. Sacred dips in the holy Ganga, dawn boat rides along ancient ghats, and divine darshan at Kashi Vishwanath.
+    </p>
+
+    <!-- Target Date Indicator & Date Picker -->
+    <div class="mb-8 inline-flex flex-wrap items-center justify-center gap-3 px-5 py-2 rounded-2xl bg-stone-900/85 border border-orange-500/25 text-xs md:text-sm text-amber-200/90 shadow-lg">
+      <div class="flex items-center gap-2">
+        <i data-lucide="calendar" class="w-4 h-4 text-orange-400"></i>
+        <span>Destination Date:</span>
+        <strong id="target-date-label" class="text-amber-300 font-semibold tracking-wide">1st March 2027</strong>
+      </div>
+      <div class="flex items-center gap-1.5 text-[11px] border-l border-amber-500/30 pl-3">
+        <span class="text-stone-400">March Day:</span>
+        <select id="march-day-select" class="bg-stone-800 text-amber-300 border border-orange-500/40 rounded px-2 py-0.5 font-semibold cursor-pointer outline-none focus:border-amber-300">
+          <!-- Populated 1-31 dynamically -->
+        </select>
+      </div>
+    </div>
+
+    <!-- Countdown Timer Cards Grid (5-column layout: Weeks, Days, Hours, Minutes, Seconds) -->
+    <div id="countdown-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 w-full max-w-5xl mb-12">
+      <!-- Weeks Card -->
+      <div class="banaras-glass rounded-2xl p-4 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 relative group overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all"></div>
+        <span id="weeks" class="font-cinzel text-3xl sm:text-5xl md:text-6xl font-black text-amber-100 tracking-tight leading-none drop-shadow-md">00</span>
+        <span class="mt-2 text-[11px] sm:text-xs uppercase tracking-widest text-orange-400/90 font-semibold">Weeks</span>
+        <div class="w-8 h-0.5 bg-orange-400/30 rounded-full mt-3"></div>
+      </div>
+
+      <!-- Days Card -->
+      <div class="banaras-glass rounded-2xl p-4 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 relative group overflow-hidden border-orange-400/40 shadow-lg">
+        <div class="absolute -top-10 -right-10 w-24 h-24 bg-orange-500/15 rounded-full blur-2xl group-hover:bg-orange-500/25 transition-all"></div>
+        <span id="days" class="font-cinzel text-3xl sm:text-5xl md:text-6xl font-black text-amber-200 tracking-tight leading-none drop-shadow-md">00</span>
+        <span class="mt-2 text-[11px] sm:text-xs uppercase tracking-widest text-orange-400 font-semibold">Days</span>
+        <div class="w-8 h-0.5 bg-orange-400/40 rounded-full mt-3"></div>
+      </div>
+
+      <!-- Hours Card -->
+      <div class="banaras-glass rounded-2xl p-4 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 relative group overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all"></div>
+        <span id="hours" class="font-cinzel text-3xl sm:text-5xl md:text-6xl font-black text-amber-100 tracking-tight leading-none drop-shadow-md">00</span>
+        <span class="mt-2 text-[11px] sm:text-xs uppercase tracking-widest text-orange-400/90 font-semibold">Hours</span>
+        <div class="w-8 h-0.5 bg-orange-400/30 rounded-full mt-3"></div>
+      </div>
+
+      <!-- Minutes Card -->
+      <div class="banaras-glass rounded-2xl p-4 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 relative group overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all"></div>
+        <span id="minutes" class="font-cinzel text-3xl sm:text-5xl md:text-6xl font-black text-amber-100 tracking-tight leading-none drop-shadow-md">00</span>
+        <span class="mt-2 text-[11px] sm:text-xs uppercase tracking-widest text-orange-400/90 font-semibold">Minutes</span>
+        <div class="w-8 h-0.5 bg-orange-400/30 rounded-full mt-3"></div>
+      </div>
+
+      <!-- Seconds Card (Animated ticking pulse) -->
+      <div class="banaras-glass col-span-2 sm:col-span-1 rounded-2xl p-4 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 relative group overflow-hidden border-orange-400/40">
+        <div class="absolute -top-10 -right-10 w-24 h-24 bg-amber-400/20 rounded-full blur-2xl group-hover:bg-orange-500/30 transition-all"></div>
+        <span id="seconds" class="font-cinzel text-3xl sm:text-5xl md:text-6xl font-black text-amber-300 tracking-tight leading-none drop-shadow-md pulse-tick">00</span>
+        <span class="mt-2 text-[11px] sm:text-xs uppercase tracking-widest text-amber-300 font-semibold">Seconds</span>
+        <div class="w-8 h-0.5 bg-amber-400/60 rounded-full mt-3"></div>
+      </div>
+    </div>
+
+    <!-- Celebration Arrival Banner (Triggers upon reaching destination) -->
+    <div id="countdown-celebration" class="hidden banaras-glass rounded-3xl p-8 max-w-xl mb-12 border-2 border-orange-400 shadow-2xl animate-bounce">
+      <div class="text-4xl mb-3">🔱✨🚩🪔</div>
+      <h2 class="font-cinzel text-3xl font-extrabold text-amber-300 mb-2">Banaras Trip Day Has Arrived!</h2>
+      <p class="text-stone-200 text-sm">Welcome to Mahadev's eternal city of Kashi. May your journey along the sacred Ganga bring immense peace, divine energy, and transcendent memories. Har Har Mahadev!</p>
+    </div>
+
+    <!-- Banaras Yatra Readiness & Experiences Checklist -->
+    <div class="w-full max-w-2xl banaras-glass rounded-3xl p-6 sm:p-8 text-left transition-all">
+      <div class="flex items-center justify-between mb-4 border-b border-orange-500/25 pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="compass" class="w-5 h-5 text-orange-400"></i>
+          <h3 class="font-cinzel text-lg sm:text-xl font-bold text-amber-200">Kashi Yatra Checklist & Experiences</h3>
+        </div>
+        <span id="prep-progress" class="text-xs font-semibold bg-orange-500/20 text-orange-300 px-3 py-1 rounded-full border border-orange-500/35">
+          0 / 6 Ready
+        </span>
+      </div>
+
+      <!-- Checklist items -->
+      <div class="space-y-3" id="checklist-items">
+        <label class="flex items-center gap-3 p-3 rounded-xl bg-stone-900/60 hover:bg-stone-900/80 border border-orange-500/15 cursor-pointer transition">
+          <input type="checkbox" class="trip-check rounded border-orange-500 text-orange-500 focus:ring-orange-400 h-4 w-4 bg-stone-800">
+          <span class="text-sm text-stone-300">Shri Kashi Vishwanath Sugam Darshan / Sparsh Darshan booked</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-xl bg-stone-900/60 hover:bg-stone-900/80 border border-orange-500/15 cursor-pointer transition">
+          <input type="checkbox" class="trip-check rounded border-orange-500 text-orange-500 focus:ring-orange-400 h-4 w-4 bg-stone-800">
+          <span class="text-sm text-stone-300">Sunrise boat ride booked from Assi Ghat to Dashashwamedh (Subah-e-Banaras)</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-xl bg-stone-900/60 hover:bg-stone-900/80 border border-orange-500/15 cursor-pointer transition">
+          <input type="checkbox" class="trip-check rounded border-orange-500 text-orange-500 focus:ring-orange-400 h-4 w-4 bg-stone-800">
+          <span class="text-sm text-stone-300">Evening Ganga Maha Aarti witnessed from river boat / steps</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-xl bg-stone-900/60 hover:bg-stone-900/80 border border-orange-500/15 cursor-pointer transition">
+          <input type="checkbox" class="trip-check rounded border-orange-500 text-orange-500 focus:ring-orange-400 h-4 w-4 bg-stone-800">
+          <span class="text-sm text-stone-300">Traditional cotton attire packed (for temple sanctity & ghat walks)</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-xl bg-stone-900/60 hover:bg-stone-900/80 border border-orange-500/15 cursor-pointer transition">
+          <input type="checkbox" class="trip-check rounded border-orange-500 text-orange-500 focus:ring-orange-400 h-4 w-4 bg-stone-800">
+          <span class="text-sm text-stone-300">Food itinerary pinned: Banarasi Paan, Malaiyo, Tamatar Chaat & Blue Lassi</span>
+        </label>
+        <label class="flex items-center gap-3 p-3 rounded-xl bg-stone-900/60 hover:bg-stone-900/80 border border-orange-500/15 cursor-pointer transition">
+          <input type="checkbox" class="trip-check rounded border-orange-500 text-orange-500 focus:ring-orange-400 h-4 w-4 bg-stone-800">
+          <span class="text-sm text-stone-300">Pilgrimage visits planned: Kal Bhairav Temple, Sankat Mochan & Sarnath</span>
+        </label>
+      </div>
+
+      <!-- Sacred Shiva Shloka Footer -->
+      <div class="mt-6 pt-4 border-t border-orange-500/20 text-center">
+        <p class="font-cinzel text-xs sm:text-sm text-amber-300/85 italic">
+          "Kashyam Hi Kashate Kashi, Kashi Sarva Prakashika"
+        </p>
+        <span class="text-[11px] text-stone-400 block mt-0.5">
+          "Kashi shines with transcendental brilliance, illuminating all wisdom and liberating the soul."
+        </span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 w-full py-5 text-center text-xs text-amber-200/50 border-t border-orange-500/15 bg-stone-950/70 backdrop-blur-md">
+    <div class="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>ॐ नमः शिवाय • Sacred Countdown to Varanasi (Banaras) 2027</p>
+      <p class="text-stone-400">Target: March 2027 • Ananda Van of Lord Shiva</p>
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-stone-900/95 text-amber-200 px-5 py-3 rounded-xl border border-orange-400/40 shadow-2xl flex items-center gap-3">
+    <i data-lucide="sparkles" class="w-4 h-4 text-orange-400"></i>
+    <span id="toast-msg" class="text-xs sm:text-sm font-medium"></span>
+  </div>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    /* ============================================================
+       0. IMAGE LOADER WITH MULTIPLE CDNS & LOCAL BACKUP
+       ============================================================ */
+    const heroBg = document.getElementById('hero-bg');
+    
+    // Multiple mirrors of your exact Varanasi Ghats sunrise boats photograph
+    const imageCandidates =  [ './BG.jpeg'
+      
+    ];
+
+    function applyBackgroundImage(url) {
+      heroBg.style.backgroundImage = `url('${url}')`;
+    }
+
+    function tryLoadImages(candidates, index = 0) {
+      if (index >= candidates.length) return;
+      const testImg = new Image();
+      testImg.onload = () => {
+        applyBackgroundImage(candidates[index]);
+      };
+      testImg.onerror = () => {
+        tryLoadImages(candidates, index + 1);
+      };
+      testImg.src = candidates[index];
+    }
+
+    // Start attempting to load the remote image mirrors
+    tryLoadImages(imageCandidates);
+
+    // Support picking the exact file from your computer/phone if offline or local
+    const localImgInput = document.getElementById('local-img-input');
+    if (localImgInput) {
+      localImgInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            applyBackgroundImage(event.target.result);
+            showToast('✅ Background image updated from your file!');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    /* ============================================================
+       1. MARCH 2027 TARGET DATE & COUNTDOWN ENGINE
+       ============================================================ */
+    const weeksEl = document.getElementById('weeks');
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+    const celebrationBox = document.getElementById('countdown-celebration');
+    const countdownGrid = document.getElementById('countdown-grid');
+    const targetDateLabel = document.getElementById('target-date-label');
+    const marchDaySelect = document.getElementById('march-day-select');
+
+    // Populate March days (1 to 31)
+    let selectedDay = 1;
+    for (let d = 1; d <= 31; d++) {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = `${d}${getOrdinalSuffix(d)} March`;
+      if (d === 1) opt.selected = true;
+      marchDaySelect.appendChild(opt);
+    }
+
+    function getOrdinalSuffix(i) {
+      const j = i % 10, k = i % 100;
+      if (j === 1 && k !== 11) return 'st';
+      if (j === 2 && k !== 12) return 'nd';
+      if (j === 3 && k !== 13) return 'rd';
+      return 'th';
+    }
+
+    // Target: Year 2027, Month: March (index 2 in JS Date), Day: selectedDay
+    let targetDate = new Date(2027, 2, selectedDay, 0, 0, 0);
+
+    marchDaySelect.addEventListener('change', (e) => {
+      selectedDay = parseInt(e.target.value, 10);
+      targetDate = new Date(2027, 2, selectedDay, 0, 0, 0);
+      targetDateLabel.textContent = `${selectedDay}${getOrdinalSuffix(selectedDay)} March 2027`;
+      celebrationTriggered = false;
+      if (celebrationBox) celebrationBox.classList.add('hidden');
+      if (countdownGrid) countdownGrid.classList.remove('opacity-75');
+      showToast(`Destination set to ${selectedDay}${getOrdinalSuffix(selectedDay)} March 2027`);
+      updateCountdown();
+    });
+
+    function formatNumber(num) {
+      return num < 10 ? `0${num}` : num.toString();
+    }
+
+    let celebrationTriggered = false;
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const difference = targetDate.getTime() - now;
+
+      if (difference <= 0) {
+        if (weeksEl) weeksEl.textContent = '00';
+        daysEl.textContent = '00';
+        hoursEl.textContent = '00';
+        minutesEl.textContent = '00';
+        secondsEl.textContent = '00';
+
+        if (!celebrationTriggered) {
+          celebrationTriggered = true;
+          if (countdownGrid) countdownGrid.classList.add('opacity-75');
+          if (celebrationBox) celebrationBox.classList.remove('hidden');
+          triggerCelebrationConfetti();
+        }
+        return;
+      }
+
+      // Exact mathematical breakdown into Weeks, Days, Hours, Minutes, Seconds
+      const totalSeconds = Math.max(0, Math.floor(difference / 1000));
+      const totalDays = Math.floor(totalSeconds / 86400);
+      const weeks = Math.floor(totalDays / 7);
+      const days = totalDays % 7;
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      if (weeksEl) weeksEl.textContent = formatNumber(weeks);
+      daysEl.textContent = formatNumber(days);
+      hoursEl.textContent = formatNumber(hours);
+      minutesEl.textContent = formatNumber(minutes);
+      secondsEl.textContent = formatNumber(seconds);
+    }
+
+    // Run timer loop every second
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    /* ============================================================
+       2. TEMPLE BELL CHIME (Web Audio API)
+       ============================================================ */
+    let audioCtx = null;
+
+    function initAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playKashiChime() {
+      try {
+        initAudioContext();
+        const now = audioCtx.currentTime;
+
+        const frequencies = [440.00, 880.00, 1320.00, 1760.00, 2640.00];
+        const gains = [0.4, 0.25, 0.15, 0.08, 0.03];
+
+        frequencies.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+
+          gainNode.gain.setValueAtTime(0, now);
+          gainNode.gain.linearRampToValueAtTime(gains[idx], now + 0.02);
+          gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 3.0);
+
+          osc.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+
+          osc.start(now);
+          osc.stop(now + 3.2);
+        });
+
+        showToast('🔱 Har Har Mahadev • Temple Bell!');
+      } catch (err) {
+        console.error("Audio error:", err);
+      }
+    }
+
+    document.getElementById('bell-btn').addEventListener('click', playKashiChime);
+
+    /* ============================================================
+       3. TRIP CHECKLIST INTERACTION
+       ============================================================ */
+    const checkboxes = document.querySelectorAll('.trip-check');
+    const prepProgressEl = document.getElementById('prep-progress');
+
+    function updateProgress() {
+      let checkedCount = 0;
+      checkboxes.forEach(box => {
+        if (box.checked) checkedCount++;
+      });
+      prepProgressEl.textContent = `${checkedCount} / ${checkboxes.length} Ready`;
+      if (checkedCount === checkboxes.length) {
+        prepProgressEl.classList.remove('bg-orange-500/20', 'text-orange-300');
+        prepProgressEl.classList.add('bg-emerald-500/30', 'text-emerald-300', 'border-emerald-500/40');
+        showToast('🎉 All Banaras trip plans ready! Har Har Mahadev!');
+      } else {
+        prepProgressEl.classList.add('bg-orange-500/20', 'text-orange-300');
+        prepProgressEl.classList.remove('bg-emerald-500/30', 'text-emerald-300', 'border-emerald-500/40');
+      }
+    }
+
+    checkboxes.forEach(box => {
+      box.addEventListener('change', updateProgress);
+    });
+
+    /* ============================================================
+       4. CELEBRATION CONFETTI
+       ============================================================ */
+    function triggerCelebrationConfetti() {
+      if (typeof confetti === 'function') {
+        const duration = 5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 999 };
+
+        const interval = setInterval(function() {
+          const timeLeft = animationEnd - Date.now();
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+          const particleCount = 50 * (timeLeft / duration);
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }, colors: ['#f97316', '#fbbf24', '#ea580c', '#ffffff'] }));
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }, colors: ['#f97316', '#fbbf24', '#ea580c', '#ffffff'] }));
+        }, 250);
+      }
+    }
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    /* ============================================================
+       5. TOAST NOTIFICATIONS
+       ============================================================ */
+    let toastTimeout;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      toastMsg.textContent = message;
+      toast.classList.remove('opacity-0', 'translate-y-24');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-24');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 2600);
+    }
+  </script>
+</body>
+</html>
